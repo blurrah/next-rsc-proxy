@@ -23,19 +23,40 @@ func NewServer() *Server {
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	originalURL := r.URL.String()
 	if r.Header.Get("RSC") == "1" {
 		targetQuery := r.URL.Query()
 		// Add `_rsc` query param if not present
 		if !targetQuery.Has("_rsc") {
 			// TODO: Generate a key based on the Next-Router-State-Tree instead of 1
-			targetQuery.Set("_rsc", "1")
+			targetQuery.Add("_rsc", "1")
 			r.URL.RawQuery = targetQuery.Encode()
-		}
 
+			w.Header().Add("X-Forwarded-URL", r.URL.String())
+		}
 	}
-	s.proxy.ServeHTTP(w, r)
+
+	rw := &responseWriter{
+		ResponseWriter: w,
+		originalURL:    originalURL,
+		modifiedURL:    r.URL.String(),
+	}
+
+	s.proxy.ServeHTTP(rw, r)
 }
 
 func (s *Server) Start() error {
 	return http.ListenAndServe(":8080", s)
+}
+
+type responseWriter struct {
+	http.ResponseWriter
+	originalURL string
+	modifiedURL string
+}
+
+func (rw *responseWriter) WriteHeader(statusCode int) {
+	rw.Header().Add("X-Rsc-Proxy-Original-Url", rw.originalURL)
+	rw.Header().Add("X-Rsc-Proxy-Modified-Url", rw.modifiedURL)
+	rw.ResponseWriter.WriteHeader(statusCode)
 }
