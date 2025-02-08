@@ -33,6 +33,7 @@ This feels way easier and fixes it for all CDN's. Just be sure to allow for diff
 - [ ] Generate correct hash based on `Next-Router-State-Tree` (but allow for it to be disabled to improve cache hit rate)
 - [ ] Add OTEL tracing
 
+```mermaid
 sequenceDiagram
     participant Client
     participant CDN
@@ -52,6 +53,7 @@ sequenceDiagram
         RSC Proxy->>CDN: Cache response (Risk: CDN ignores Vary header)
         CDN->>Client: Serve response
     end
+```
 
 
 
