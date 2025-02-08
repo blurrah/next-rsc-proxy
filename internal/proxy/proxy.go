@@ -46,7 +46,11 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) Start() error {
-	return http.ListenAndServe(":8080", s)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	return http.ListenAndServe(":"+port, s)
 }
 
 type responseWriter struct {
