@@ -33,6 +33,26 @@ This feels way easier and fixes it for all CDN's. Just be sure to allow for diff
 - [ ] Generate correct hash based on `Next-Router-State-Tree` (but allow for it to be disabled to improve cache hit rate)
 - [ ] Add OTEL tracing
 
+sequenceDiagram
+    participant Client
+    participant CDN
+    participant RSC Proxy
+    participant Next.js Server
+
+    Client->>CDN: Request with RSC: 1 header
+    alt Cached response exists
+        CDN-->>Client: Serve cached response
+    else No cached response
+        CDN->>RSC Proxy: Forward request
+        alt Request lacks ?_rsc query parameter
+            RSC Proxy->>RSC Proxy: Append ?_rsc query parameter
+        end
+        RSC Proxy->>Next.js Server: Forward request
+        Next.js Server->>RSC Proxy: Response with RSC payload
+        RSC Proxy->>CDN: Cache response (Risk: CDN ignores Vary header)
+        CDN->>Client: Serve response
+    end
+
 
 
 
