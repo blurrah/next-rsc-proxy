@@ -10,7 +10,9 @@ It does not override any existing `?_rsc` query parameters as to not break inter
 ## Usage
 
 Run the server using the following command:
-`TARGET_URL=http://localhost:3000 PORT=3001 ./rsc-proxy`
+```bash
+TARGET_URL=http://localhost:3000 PORT=3001 ./rsc-proxy
+```
 
 Use `TARGET_URL` to point to your Next.js server and `PORT` for the port to run this proxy on.
 
