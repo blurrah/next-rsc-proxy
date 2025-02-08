@@ -1,8 +1,11 @@
 package proxy
 
 import (
+	"log"
 	"net/http"
 	"net/http/httputil"
+	"net/url"
+	"os"
 )
 
 type Server struct {
@@ -10,6 +13,10 @@ type Server struct {
 }
 
 func NewServer() *Server {
+	url, err := url.Parse(os.Getenv("TARGET_URL"))
+	if err != nil {
+		log.Fatalf("Failed to parse target URL: %v", err)
+	}
 	return &Server{
 		proxy: httputil.NewSingleHostReverseProxy(url),
 	}
