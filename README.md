@@ -20,9 +20,9 @@ I've seen this happen in multiple CDN solutions (Cloudflare, Cloudfront, Azure F
 This feels way easier and fixes it for all CDN's. Just be sure to allow for different caches based on query parameters and you're set.
 
 ## TODO
-- [] Use env variables for all configuration
-- [] Generate correct hash based on `Next-Router-State-Tree` (but allow for it to be disabled to improve cache hit rate)
-- [] Add OTEL tracing
+- [ ] Use env variables for all configuration
+- [ ] Generate correct hash based on `Next-Router-State-Tree` (but allow for it to be disabled to improve cache hit rate)
+- [ ] Add OTEL tracing
 
 
 
