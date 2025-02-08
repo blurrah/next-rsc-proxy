@@ -7,6 +7,13 @@ Small reverse proxy server that forces any request with the `RSC: 1` header (and
 
 It does not override any existing `?_rsc` query parameters as to not break intercepted routes.
 
+## Usage
+
+Run the server using the following command:
+`TARGET_URL=http://localhost:3000 PORT=3001 ./rsc-proxy`
+
+Use `TARGET_URL` to point to your Next.js server and `PORT` for the port to run this proxy on.
+
 ## Why
 
 This fixes the issue where RSC payloads can be cached on CDN's that do not enforce the `Vary` header. Next.js requests `?_rsc` query params as a fallback  but it's possible to manually fetch RSC payloads and get those cached on urls without the query parameter.
