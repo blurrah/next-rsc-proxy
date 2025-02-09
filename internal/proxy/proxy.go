@@ -6,6 +6,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"strings"
 )
 
 type Server struct {
@@ -24,6 +25,13 @@ func NewServer() *Server {
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	originalURL := r.URL.String()
+
+	// Skip modification for .rsc requests as they're already RSC payloads
+	if strings.HasSuffix(r.URL.Path, ".rsc") {
+		s.proxy.ServeHTTP(w, r)
+		return
+	}
+
 	if r.Header.Get("RSC") == "1" {
 		targetQuery := r.URL.Query()
 		// Add `_rsc` query param if not present

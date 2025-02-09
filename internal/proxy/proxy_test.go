@@ -26,43 +26,56 @@ func TestServer_ServeHTTP(t *testing.T) {
 		rscHeader     bool
 		initialQuery  string
 		expectedQuery string
+		path          string
 	}{
 		{
 			name:          "No RSC header",
 			rscHeader:     false,
 			initialQuery:  "",
 			expectedQuery: "",
+			path:          "/",
 		},
 		{
 			name:          "RSC header with no query",
 			rscHeader:     true,
 			initialQuery:  "",
 			expectedQuery: "_rsc=1",
+			path:          "/",
 		},
 		{
 			name:          "RSC header with existing query",
 			rscHeader:     true,
 			initialQuery:  "foo=bar",
 			expectedQuery: "_rsc=1&foo=bar",
+			path:          "/",
 		},
 		{
 			name:          "RSC header with existing _rsc",
 			rscHeader:     true,
 			initialQuery:  "_rsc=2",
 			expectedQuery: "_rsc=2",
+			path:          "/",
 		},
 		{
 			name:          "RSC header with multiple queries",
 			rscHeader:     true,
 			initialQuery:  "foo=bar&baz=qux",
 			expectedQuery: "_rsc=1&baz=qux&foo=bar",
+			path:          "/",
+		},
+		{
+			name:          "Request with .rsc suffix",
+			rscHeader:     true,
+			initialQuery:  "foo=bar",
+			expectedQuery: "foo=bar",
+			path:          "/data.rsc",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Create a test request
-			req := httptest.NewRequest("GET", "/?"+tt.initialQuery, nil)
+			req := httptest.NewRequest("GET", tt.path+"?"+tt.initialQuery, nil)
 			if tt.rscHeader {
 				req.Header.Set("RSC", "1")
 			}
